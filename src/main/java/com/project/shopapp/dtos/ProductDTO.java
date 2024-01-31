@@ -1,16 +1,18 @@
 package com.project.shopapp.dtos;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data // toString, equals, hashCode, getter, setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 
 public class ProductDTO {
     @NotBlank(message = "Name cannot be blank")
@@ -23,14 +25,15 @@ public class ProductDTO {
     @PositiveOrZero(message = "Quantity must be a non-negative number")
     private int quantity;
 
-    // Assuming thumbnail and description can be empty or null
-    @NotBlank(message = "Thumbnail cannot be blank")
     private String thumbnail;
+
     @NotBlank(message = "Description cannot be blank")
     private String description;
 
-    @Positive(message = "Category ID must be a positive number")
+
     @JsonProperty("category_id")
+    @PositiveOrZero(message = "Category ID must be a positive number")
     private int categoryId;
 
+    private MultipartFile file;
 }
