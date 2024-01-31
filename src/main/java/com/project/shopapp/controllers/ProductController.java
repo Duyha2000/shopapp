@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -47,9 +48,12 @@ public class ProductController {
                 return ResponseEntity.badRequest().body(
                         bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage));
             }
-            MultipartFile file = productDTO.getFile();
-            // Validate file upload: kiểm tra file có tồn tại không
-            if (file != null) {
+            // MultipartFile file = productDTO.getFile();
+            // get multiple files:
+            List<MultipartFile> files = productDTO.getFiles();
+            files = files == null ? List.of() : files;
+            for (MultipartFile file : files) {
+                // Validate file upload: kiểm tra file có tồn tại không
                 // Handle file upload: kiểm tra file có đúng định dạng không, có quá 10MB không
                 if (file.getSize() > MAX_FILE_SIZE) { // Kích thước > 10MB
                     return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
@@ -60,12 +64,12 @@ public class ProductController {
                     return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
                             .body("Only JPEG and PNG image files are allowed");
                 }
+                // Lưu file vào thư mục uploads
+                String fileName = storeFile(file);
+                // Lưu tên file vào productDTO
+                productDTO.setThumbnail(fileName);
             }
-            // Lưu file vào thư mục uploads
-            assert file != null;
-            String fileName = storeFile(file);
-            // Lưu tên file vào productDTO
-            productDTO.setThumbnail(fileName);
+
             return ResponseEntity.ok("  This is a post request");
         } catch (Exception e) {
             //  Handle the exception as per your requirements

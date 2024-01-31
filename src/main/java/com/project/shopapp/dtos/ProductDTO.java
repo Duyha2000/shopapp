@@ -8,6 +8,8 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Data // toString, equals, hashCode, getter, setter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -36,4 +38,7 @@ public class ProductDTO {
     private int categoryId;
 
     private MultipartFile file;
+    //     upload multipart file
+    private List<MultipartFile> files;
+
 }
